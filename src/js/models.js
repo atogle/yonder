@@ -34,11 +34,17 @@ var Yonder = Yonder || {};
         var geocoder = new google.maps.Geocoder(),
           model = this;
 
-        geocoder.geocode( { 'address': addr}, function(results, status) {
-          if (status === google.maps.GeocoderStatus.OK) {
-            model.set(model.parse(results[0]));
-          }
-        });
+        try {
+          geocoder.geocode( { 'address': addr}, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+              model.set(model.parse(results[0]));
+            } else {
+              model.set({error: 'No results.'});
+            }
+          });
+        } catch (e) {
+          model.set({error: 'Error parsing results.'});
+        }
       },
       // Override parse to set normalized attributes for display.
       // The res param is the raw respsone from the geocoder
@@ -53,33 +59,51 @@ var Yonder = Yonder || {};
 
         return normalRes;
       }
-    })
+    }),
     
-    // //Yahoo! PlaceFinder
-    // Y.GeocoderModel.extend({
-    //   //Include a unique geocoder name for display
-    //   defaults: {
-    //     type: 'yahoo',
-    //     name: 'Yahoo! PlaceFinder'
-    //   },
-    //   // Geocode the address and call success or error when complete
-    //   geocode: function(addr) {
-    //     this.set(this.parse({}));
-    //   },
-    //   // Override parse to set normalized attributes for display.
-    //   // The res param is the raw respsone from the geocoder
-    //   parse: function(res) {
-    //     var normalRes = {
-    //       geocodedAddress: 1,
-    //       lon: 2,
-    //       lat: 3,
-    //       quality: 4,
-    //       raw: 5,
-    //     };
+    //Yahoo! PlaceFinder
+    Y.GeocoderModel.extend({
+      //Include a unique geocoder name for display
+      defaults: {
+        type: 'yahoo',
+        name: 'Yahoo! Placefinder'
+      },
+      // Geocode the address and call success or error when complete
+      geocode: function(addr) {
+        var model = this;
 
-    //     return normalRes;
-    //   }
-    // })
+        try {
+          $.ajax({
+            dataType: 'jsonp',
+            data: {
+              q: 'select * from geo.placefinder where text="'+addr+'"',
+              format: 'json',
+              appid: 'test', //TODO: config value
+            },
+            url: 'http://query.yahooapis.com/v1/public/yql',
+            success: function (res) {
+              model.set(model.parse(res.query.results.Result));
+            },
+          });
+        } catch (e) {
+          model.set({error: 'Error parsing results.'});
+        }
+
+      },
+      // Override parse to set normalized attributes for display.
+      // The res param is the raw respsone from the geocoder
+      parse: function(res) {
+        var normalRes = {
+          geocodedAddress: [res.line1, res.line2, res.line3, res.line4].join(' '),
+          lon: res.longitude,
+          lat: res.latitude,
+          quality: res.quality,
+          raw: JSON.stringify(res, null, ' '),
+        };
+
+        return normalRes;
+      }
+    })
   ];
 
   Y.GeocoderCollection = Backbone.Collection.extend({
