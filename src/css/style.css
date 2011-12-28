@@ -4,4 +4,10 @@ body {
 
 #map {
   height:313px;
+  margin-bottom:20px;
+}
+
+table td pre {
+  max-height:300px;
+  overflow-y:scroll;
 }

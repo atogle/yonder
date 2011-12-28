@@ -3,14 +3,16 @@ var Yonder = Yonder || {};
 (function(Y) {
   Y.GeocoderView = Backbone.View.extend({
 
-    tagName: 'div',
+    template: _.template($('#geocoder-result-template').html()),
 
     initialize: function() {
       this.model.bind('change', this.render, this);
     },
     
     render: function() {
-        $('.geocoder-result', '#'+this.model.get('type')).html(this.model.get('foo'));
+      $('.geocoder-result', '#'+this.model.get('type')).append(
+        _.template( $("#geocoder-result-template").html(), this.model.toJSON() )
+      );
       return this;
     }
   });
@@ -18,6 +20,8 @@ var Yonder = Yonder || {};
   Y.GeocoderListView = Backbone.View.extend({
     // The context of this view
     el: $('.container'),
+
+    template: _.template($('#geocoder-list-template').html()),
 
     events: {
       // Bind geocode button click
@@ -43,9 +47,7 @@ var Yonder = Yonder || {};
 
     // Render the context for each  geocoder result
     render: function(geocoder) {
-      $('#geocoder-results', this.el).append('<div id="'+geocoder.get('type')+'" class="span5"> \
-        <h2>'+geocoder.get('name')+'</h2> \
-        <div class="geocoder-result"></div></div>');
+      $('#geocoder-results', this.el).append(_.template( $("#geocoder-list-template").html(), geocoder.toJSON() ));
     },
 
     // Call geocode for the collection, triggering updates for every model
