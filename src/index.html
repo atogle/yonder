@@ -52,7 +52,7 @@
   </body>
 
   <script type="text/template" id="geocoder-list-template">
-    <div id="<%= type %>" class="span5">
+    <div id="<%= type %>" class="span6">
       <h2><%= name %></h2>
       <table class="geocoder-result zebra-striped">
       
@@ -66,6 +66,10 @@
     <tr><td>Longitude<td><%= lon %>
     <tr><td>Quality<td><%= quality %>
     <tr><td>Raw Result<td><pre><%= raw %></pre>
+  </script>
+
+  <script type="text/template" id="geocoder-error-template">
+    <tr><td><%= error %>
   </script>
 
   <script src="js/lib/leaflet-0.2.1/leaflet.js"></script>
