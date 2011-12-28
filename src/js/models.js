@@ -31,32 +31,55 @@ var Yonder = Yonder || {};
       },
       // Geocode the address and call success or error when complete
       geocode: function(addr) {
-        this.set(this.parse({foo: addr+'bar'}));
+        var geocoder = new google.maps.Geocoder(),
+          model = this;
+
+        geocoder.geocode( { 'address': addr}, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            model.set(model.parse(results[0]));
+          }
+        });
       },
       // Override parse to set normalized attributes for display.
       // The res param is the raw respsone from the geocoder
       parse: function(res) {
-        return res;
-      }
-    }),
-    
-    //Yahoo! PlaceFinder
-    Y.GeocoderModel.extend({
-      //Include a unique geocoder name for display
-      defaults: {
-        type: 'yahoo',
-        name: 'Yahoo! PlaceFinder'
-      },
-      // Geocode the address and call success or error when complete
-      geocode: function(addr) {
-        this.set(this.parse({foo: addr+'bar2'}));
-      },
-      // Override parse to set normalized attributes for display.
-      // The res param is the raw respsone from the geocoder
-      parse: function(res) {
-        return res;
+        var normalRes = {
+          geocodedAddress: res.formatted_address,
+          lon: res.geometry.location.lng(),
+          lat: res.geometry.location.lat(),
+          quality: res.geometry.location_type,
+          raw: JSON.stringify(res, null, ' ')
+        };
+
+        return normalRes;
       }
     })
+    
+    // //Yahoo! PlaceFinder
+    // Y.GeocoderModel.extend({
+    //   //Include a unique geocoder name for display
+    //   defaults: {
+    //     type: 'yahoo',
+    //     name: 'Yahoo! PlaceFinder'
+    //   },
+    //   // Geocode the address and call success or error when complete
+    //   geocode: function(addr) {
+    //     this.set(this.parse({}));
+    //   },
+    //   // Override parse to set normalized attributes for display.
+    //   // The res param is the raw respsone from the geocoder
+    //   parse: function(res) {
+    //     var normalRes = {
+    //       geocodedAddress: 1,
+    //       lon: 2,
+    //       lat: 3,
+    //       quality: 4,
+    //       raw: 5,
+    //     };
+
+    //     return normalRes;
+    //   }
+    // })
   ];
 
   Y.GeocoderCollection = Backbone.Collection.extend({

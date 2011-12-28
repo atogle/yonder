@@ -51,10 +51,30 @@
 
   </body>
 
+  <script type="text/template" id="geocoder-list-template">
+    <div id="<%= type %>" class="span5">
+      <h2><%= name %></h2>
+      <table class="geocoder-result zebra-striped">
+      
+      </table>
+    </div>
+  </script>
+
+  <script type="text/template" id="geocoder-result-template">
+    <tr><td>Geocoded Address<td><%= geocodedAddress %>
+    <tr><td>Latitude<td><%= lat %>
+    <tr><td>Longitude<td><%= lon %>
+    <tr><td>Quality<td><%= quality %>
+    <tr><td>Raw Result<td><pre><%= raw %></pre>
+  </script>
+
   <script src="js/lib/leaflet-0.2.1/leaflet.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.2.2/underscore-min.js"></script>
   <script src="http://documentcloud.github.com/backbone/backbone.js"></script>
+
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
   <script src="js/models.js"></script>
   <script src="js/views.js"></script>
   <script src="js/yonder.js"></script>
