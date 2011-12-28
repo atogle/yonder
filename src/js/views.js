@@ -10,9 +10,14 @@ var Yonder = Yonder || {};
     },
     
     render: function() {
-      $('.geocoder-result', '#'+this.model.get('type')).append(
-        _.template( $("#geocoder-result-template").html(), this.model.toJSON() )
-      );
+      var tmpl;
+      if (this.model.has('error')) {
+        tmpl = _.template( $("#geocoder-error-template").html(), this.model.toJSON() );
+      } else {
+        tmpl = _.template( $("#geocoder-result-template").html(), this.model.toJSON() );
+      }
+
+      $('.geocoder-result', '#'+this.model.get('type')).html(tmpl);
       return this;
     }
   });
