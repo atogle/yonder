@@ -1,6 +1,20 @@
 var Yonder = Yonder || {};
 
 (function(Y) {
+  Y.GeocoderView = Backbone.View.extend({
+
+    tagName: 'div',
+
+    initialize: function() {
+      this.model.bind('change', this.render, this);
+    },
+    
+    render: function() {
+        $('.geocoder-result', '#'+this.model.get('type')).html(this.model.get('foo'));
+      return this;
+    }
+  });
+
   Y.GeocoderListView = Backbone.View.extend({
     // The context of this view
     el: $('.container'),
@@ -16,9 +30,13 @@ var Yonder = Yonder || {};
       // Init and add each geocoder model
       _.each(Y.geocoderList, function(g) {
         var geocoder = new g();
+
+        // Init the view
+        new Y.GeocoderView({ model: geocoder});
+
         this.geocoders.add(geocoder);
 
-        // Render the context for each  geocoder result
+        // Render the context for each geocoder result
         this.render(geocoder);
       }, this);
     },
@@ -39,10 +57,5 @@ var Yonder = Yonder || {};
         this.geocoders.fetch( { 'address': addr });  
       }
     }
-  });
-
-
-  Y.GeocoderView = Backbone.View.extend({
-
   });
 })(Yonder);

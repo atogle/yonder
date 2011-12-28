@@ -13,9 +13,8 @@ var Yonder = Yonder || {};
     },
     // Implement sync to call the geocode method
     sync: function(method, model, options) {
-      alert('syncing ' + this.get('name'));
       if (method === 'read') {
-        this.geocode(options.address, options.success, options.error); 
+        this.geocode(options.address); 
       } else {
         throw new Error('Method [' + method + '] is not supported. Geocoders are read-only.');
       }
@@ -31,11 +30,11 @@ var Yonder = Yonder || {};
         name: 'Google Maps'
       },
       // Geocode the address and call success or error when complete
-      geocode: function(addr, success, error) {
-        alert('geocoding ' + addr + ' with ' + this.get('name'));
+      geocode: function(addr) {
+        this.set(this.parse({foo: addr+'bar'}));
       },
       // Override parse to set normalized attributes for display.
-      // The res param is the raw respsone from the 
+      // The res param is the raw respsone from the geocoder
       parse: function(res) {
         return res;
       }
@@ -49,11 +48,11 @@ var Yonder = Yonder || {};
         name: 'Yahoo! PlaceFinder'
       },
       // Geocode the address and call success or error when complete
-      geocode: function(addr, success, error) {
-        alert('geocoding ' + addr + ' with ' + this.get('name'));
+      geocode: function(addr) {
+        this.set(this.parse({foo: addr+'bar2'}));
       },
       // Override parse to set normalized attributes for display.
-      // The res param is the raw respsone from the 
+      // The res param is the raw respsone from the geocoder
       parse: function(res) {
         return res;
       }
@@ -67,10 +66,6 @@ var Yonder = Yonder || {};
       this.each(function(model) {
         model.fetch(options);
       });
-    },
-    // Order by display name
-    comparator: function(model) {
-      return model.get('name');
     }
   });
 })(Yonder);
