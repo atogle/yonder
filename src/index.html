@@ -36,25 +36,12 @@
 
       <!-- Geocode form section -->
       <div class="well">
-        <input class="span7" id="geocode-text" name="" type="text" placeholder="">
-        <button class="btn primary">Geocode</button>
+        <input id="geocode-address" class="span7" name="" type="text" placeholder="">
+        <button id="geocode-submit" class="btn primary">Geocode</button>
       </div>
       
       <!-- Example row of columns -->
-      <div class="row">
-        <div class="span5">
-          <h2>Heading</h2>
-          <p>Etiam porta sem malesuada magna mollis euismod. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-        </div>
-        <div class="span5">
-          <h2>Heading</h2>
-           <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-       </div>
-        <div class="span5">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        </div>
-      </div>
+      <div id="geocoder-results" class="row"></div>
 
       <footer>
         <p><a href="http://twitter.com/atogle">Aaron Ogle</a>, 2011</p>
@@ -65,6 +52,11 @@
   </body>
 
   <script src="js/lib/leaflet-0.2.1/leaflet.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.2.2/underscore-min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/views.js"></script>
   <script src="js/yonder.js"></script>
 
 </html>
