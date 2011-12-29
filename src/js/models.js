@@ -1,16 +1,9 @@
 var Yonder = Yonder || {};
 
 (function(Y) {
+  // Model colors: E41A1C, 377EB8, 4DAF4A, 984EA3, FF7F00, FFFF33, A65628, F781BF, 999999
+
   Y.GeocoderModel = Backbone.Model.extend({
-    // Defaults for required display values
-    defaults: {
-      type: 'Please set [type] in this Geocoder model.',
-      name: 'Please set [name] in this Geocoder model.',
-      geocodedAddress: 'Please set [geocodedAddress] in this Geocoder model.',
-      lon: 'Please set [lon] in this Geocoder model.',
-      lat: 'Please set [lat] in this Geocoder model.',
-      quality: 'Please set [quality] in this Geocoder model.'
-    },
     // Implement sync to call the geocode method
     sync: function(method, model, options) {
       if (method === 'read') {
@@ -27,7 +20,8 @@ var Yonder = Yonder || {};
       //Include a unique geocoder name for display
       defaults: {
         type: 'google',
-        name: 'Google Maps'
+        name: 'Google Maps',
+        color: '#E41A1C'
       },
       // Geocode the address and call success or error when complete
       geocode: function(addr) {
@@ -66,7 +60,8 @@ var Yonder = Yonder || {};
       //Include a unique geocoder name for display
       defaults: {
         type: 'yahoo',
-        name: 'Yahoo! Placefinder'
+        name: 'Yahoo! Placefinder',
+        color: '#377EB8'
       },
       // Geocode the address and call success or error when complete
       geocode: function(addr) {
@@ -82,7 +77,11 @@ var Yonder = Yonder || {};
             },
             url: 'http://query.yahooapis.com/v1/public/yql',
             success: function (res) {
-              model.set(model.parse(res.query.results.Result));
+              if (res.query.count) {
+                model.set(model.parse(res.query.results.Result));  
+              } else {
+                model.set({error: 'No results.'});
+              }
             },
           });
         } catch (e) {
@@ -95,8 +94,8 @@ var Yonder = Yonder || {};
       parse: function(res) {
         var normalRes = {
           geocodedAddress: [res.line1, res.line2, res.line3, res.line4].join(' '),
-          lon: res.longitude,
-          lat: res.latitude,
+          lon: parseFloat(res.longitude),
+          lat: parseFloat(res.latitude),
           quality: res.quality,
           raw: JSON.stringify(res, null, ' '),
         };

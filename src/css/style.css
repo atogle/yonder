@@ -7,7 +7,18 @@ body {
   margin-bottom:20px;
 }
 
-table td pre {
+.geocoder-result pre {
   max-height:300px;
-  overflow-y:scroll;
+  overflow:scroll;
+}
+
+.marker-legend {
+  height:20px;
+  width:20px;
+  margin:8px 8px 0 0;
+  border:solid 2px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+  float:left;
+  opacity:0.8;
 }

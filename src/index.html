@@ -53,23 +53,24 @@
 
   <script type="text/template" id="geocoder-list-template">
     <div id="<%= type %>" class="span6">
-      <h2><%= name %></h2>
-      <table class="geocoder-result zebra-striped">
+      <div class="marker-legend" style="border-color:<%= color %>; background-color:<%= color %>"></div><h2><%= name %></h2>
+      <div class="geocoder-result">
       
-      </table>
+      </div>
     </div>
   </script>
 
   <script type="text/template" id="geocoder-result-template">
-    <tr><td>Geocoded Address<td><%= geocodedAddress %>
-    <tr><td>Latitude<td><%= lat %>
-    <tr><td>Longitude<td><%= lon %>
-    <tr><td>Quality<td><%= quality %>
-    <tr><td>Raw Result<td><pre><%= raw %></pre>
+    <dl><dt>Geocoded Address<dd><%= geocodedAddress %>
+    <dt>Latitude<dd><%= lat %>
+    <dt>Longitude<dd><%= lon %>
+    <dt>Quality<dd><%= quality %>
+    </dl>
+    <pre><%= raw %></pre>
   </script>
 
   <script type="text/template" id="geocoder-error-template">
-    <tr><td><%= error %>
+    <dl><dd><%= error %>
   </script>
 
   <script src="js/lib/leaflet-0.2.1/leaflet.js"></script>
