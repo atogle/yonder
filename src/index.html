@@ -54,24 +54,16 @@
   <script type="text/template" id="geocoder-list-template">
     <div id="<%= type %>" class="span6">
       <div class="marker-legend" style="border-color:<%= color %>; background-color:<%= color %>"></div><h2><%= name %></h2>
-      <div class="geocoder-result">
+      <dl class="geocoder-result">
       
-      </div>
+      </dl>
     </div>
   </script>
 
   <script type="text/template" id="geocoder-result-template">
-    <dl><dt>Geocoded Address<dd><%= geocodedAddress %>
-    <dt>Latitude<dd><%= lat %>
-    <dt>Longitude<dd><%= lon %>
-    <dt>Quality<dd><%= quality %>
-    </dl>
-    <pre><%= raw %></pre>
+    <dt><%= name %><dd><pre><%= val %></pre>
   </script>
 
-  <script type="text/template" id="geocoder-error-template">
-    <dl><dd><%= error %>
-  </script>
 
   <script src="js/lib/leaflet-0.2.1/leaflet.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>

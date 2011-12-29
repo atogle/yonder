@@ -7,6 +7,7 @@ var Yonder = Yonder || {};
     // Implement sync to call the geocode method
     sync: function(method, model, options) {
       if (method === 'read') {
+        this.clear({silent: true});
         this.geocode(options.address); 
       } else {
         throw new Error('Method [' + method + '] is not supported. Geocoders are read-only.');
@@ -18,11 +19,9 @@ var Yonder = Yonder || {};
     // Google Maps
     Y.GeocoderModel.extend({
       //Include a unique geocoder name for display
-      defaults: {
-        type: 'google',
-        name: 'Google Maps',
-        color: '#E41A1C'
-      },
+      type: 'google',
+      name: 'Google Maps',
+      color: '#E41A1C',
       // Geocode the address and call success or error when complete
       geocode: function(addr) {
         var geocoder = new google.maps.Geocoder(),
@@ -33,22 +32,22 @@ var Yonder = Yonder || {};
             if (status === google.maps.GeocoderStatus.OK) {
               model.set(model.parse(results[0]));
             } else {
-              model.set({error: 'No results.'});
+              model.set({'Error': 'No results.'});
             }
           });
         } catch (e) {
-          model.set({error: 'Error parsing results.'});
+          model.set({'Error': 'Error parsing results.'});
         }
       },
       // Override parse to set normalized attributes for display.
       // The res param is the raw respsone from the geocoder
       parse: function(res) {
         var normalRes = {
-          geocodedAddress: res.formatted_address,
-          lon: res.geometry.location.lng(),
-          lat: res.geometry.location.lat(),
-          quality: res.geometry.location_type,
-          raw: JSON.stringify(res, null, ' ')
+          'Address': res.formatted_address,
+          'Longitude': res.geometry.location.lng(),
+          'Latitude': res.geometry.location.lat(),
+          'Quality': res.geometry.location_type,
+          'Raw': JSON.stringify(res, null, ' ')
         };
 
         return normalRes;
@@ -58,11 +57,9 @@ var Yonder = Yonder || {};
     //Yahoo! PlaceFinder
     Y.GeocoderModel.extend({
       //Include a unique geocoder name for display
-      defaults: {
-        type: 'yahoo',
-        name: 'Yahoo! Placefinder',
-        color: '#377EB8'
-      },
+      type: 'yahoo',
+      name: 'Yahoo! Placefinder',
+      color: '#377EB8',
       // Geocode the address and call success or error when complete
       geocode: function(addr) {
         var model = this;
@@ -80,12 +77,12 @@ var Yonder = Yonder || {};
               if (res.query.count) {
                 model.set(model.parse(res.query.results.Result));  
               } else {
-                model.set({error: 'No results.'});
+                model.set({'Error': 'No results.'});
               }
             },
           });
         } catch (e) {
-          model.set({error: 'Error parsing results.'});
+          model.set({'Error': 'Error parsing results.'});
         }
 
       },
@@ -93,11 +90,11 @@ var Yonder = Yonder || {};
       // The res param is the raw respsone from the geocoder
       parse: function(res) {
         var normalRes = {
-          geocodedAddress: [res.line1, res.line2, res.line3, res.line4].join(' '),
-          lon: parseFloat(res.longitude),
-          lat: parseFloat(res.latitude),
-          quality: res.quality,
-          raw: JSON.stringify(res, null, ' '),
+          'Address': [res.line1, res.line2, res.line3, res.line4].join(' ').replace(/ {2,}/, ' '),
+          'Longitude': parseFloat(res.longitude),
+          'Latitude': parseFloat(res.latitude),
+          'Quality': res.quality,
+          'Raw': JSON.stringify(res, null, ' '),
         };
 
         return normalRes;

@@ -23,11 +23,7 @@ var Yonder = Yonder || {};
         hasResults = false;
 
       // Count updated models
-      this.collection.each(function(model) {
-        if (model.hasChanged()) {
-         view.pointsUpdated++;
-        }
-      });
+      view.pointsUpdated++;
 
       // Only render if the points updated is same as the collection size
       if (this.pointsUpdated === _.size(this.collection)) {
@@ -39,12 +35,13 @@ var Yonder = Yonder || {};
 
         this.collection.each(function(model) {
           var pt;
-          if (model.has('lat') && model.has('lon')) {
-            pt = new L.LatLng(model.get('lat'), model.get('lon'));
+
+          if (model.has('Latitude') && model.has('Longitude')) {
+            pt = new L.LatLng(model.get('Latitude'), model.get('Longitude'));
             
             // Add markers to the map
             view.layerGroup.addLayer(new L.CircleMarker(pt, {
-              color: model.get('color'),
+              color: model.color,
               radius: 8,
               fillOpacity: 0.7,
               opacity: 1.0
@@ -77,14 +74,18 @@ var Yonder = Yonder || {};
     },
     
     render: function() {
-      var tmpl;
-      if (this.model.has('error')) {
-        tmpl = _.template( $("#geocoder-error-template").html(), this.model.toJSON() );
-      } else {
-        tmpl = _.template( $("#geocoder-result-template").html(), this.model.toJSON() );
-      }
+      var type = this.model.type;
 
-      $('.geocoder-result', '#'+this.model.get('type')).html(tmpl);
+      $('.geocoder-result', '#'+type).empty();
+
+      _.each(this.model.toJSON(), function(val, name) {
+        $('.geocoder-result', '#'+type).append(
+          _.template( $("#geocoder-result-template").html(), 
+            { 'name': name, 'val': val } 
+          )
+        );
+      });
+
       return this;
     }
   });
@@ -119,7 +120,11 @@ var Yonder = Yonder || {};
 
     // Render the context for each  geocoder result
     render: function(geocoder) {
-      $('#geocoder-results', this.el).append(_.template( $("#geocoder-list-template").html(), geocoder.toJSON() ));
+      $('#geocoder-results', this.el).append(
+        _.template( $("#geocoder-list-template").html(), 
+          { 'type': geocoder.type, 'name': geocoder.name, 'color': geocoder.color} 
+        )
+      );
     },
 
     // Call geocode for the collection, triggering updates for every model
