@@ -9,7 +9,7 @@ body {
 
 .geocoder-result pre {
   max-height:300px;
-  overflow:scroll;
+  overflow:auto;
 }
 
 .marker-legend {
