@@ -74,8 +74,13 @@ var Yonder = Yonder || {};
             },
             url: 'http://query.yahooapis.com/v1/public/yql',
             success: function (res) {
-              if (res.query.count) {
-                model.set(model.parse(res.query.results.Result));  
+              if (res.query.count || ($.isArray(res.query.results.Result) && res.query.results.Result.length > 0)) {
+                // For some reason, this sometimes comes back as an array. Sad.
+                if ($.isArray(res.query.results.Result)) {
+                  model.set(model.parse(res.query.results.Result[0]));
+                } else {
+                  model.set(model.parse(res.query.results.Result));
+                }
               } else {
                 model.set({'Error': 'No results.'});
               }
@@ -122,8 +127,6 @@ var Yonder = Yonder || {};
             url: 'http://www.mapquestapi.com/geocoding/v1/address?key=' + Y.config.mapquest_id,
             crossDomain: true,
             success: function (res) {
-              console.log(res);
-
               if (res.results.length && res.results[0].locations.length) {
                 model.set(model.parse(res.results[0].locations[0]));
               } else {
