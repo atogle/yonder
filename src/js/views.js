@@ -6,14 +6,11 @@ var Yonder = Yonder || {};
       this.map = new L.Map('map');
       this.pointsUpdated = 0;
       this.layerGroup = new L.LayerGroup();
-          
-      var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/fa2b7d4057c846daa7691c7995240bd5/997/256/{z}/{x}/{y}.png',
-        cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-        cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
-
-      this.map.addLayer(this.layerGroup);
-      this.map.setView(new L.LatLng(0, 0), 2).addLayer(cloudmade);
-
+      var tileUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        tile = new L.TileLayer(tileUrl, {maxZoom: 18, attribution: tileAttribution});
+  this.map.addLayer(this.layerGroup);
+      this.map.setView(new L.LatLng(0, 0), 2).addLayer(tile);
       this.collection.bind('change', this.render, this);
     },
 
