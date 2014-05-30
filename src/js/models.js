@@ -153,7 +153,60 @@ var Yonder = Yonder || {};
 
         return normalRes;
       }
+    }),
+
+        //Esri
+    Y.GeocoderModel.extend({
+      //Include a unique geocoder name for display
+      type: 'esri',
+      name: 'Esri',
+      color: 'blue',
+      // Geocode the address and call success or error when complete
+      geocode: function(addr) {
+        var model = this;
+
+        try {
+          $.ajax({
+            dataType: 'jsonp',
+            data: {
+              text: addr,
+              f: 'pjson'
+            },
+            // Including key in the data object uri encoded the key
+            url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find',
+            crossDomain: true,
+            success: function (res) {
+              console.log(res);
+              if (res.locations.length) {
+                model.set(model.parse(res.locations[0]));
+              } else {
+                model.set({'Error': 'No results.'});
+              }
+            },
+          });
+        } catch (e) {
+          console.log(e);
+          model.set({'Error': 'Error parsing results.'});
+        }
+
+      },
+      // Override parse to set normalized attributes for display.
+      // The res param is the raw respsone from the geocoder
+      parse: function(loc) {
+        var feature = loc.feature;
+        var spacesRe = / {2,}/g,
+          normalRes = {
+            'Address': loc.name, 
+            'Longitude': parseFloat(feature.geometry.x),
+            'Latitude': parseFloat(feature.geometry.y),
+            'Quality': feature.attributes.Score, 
+            'Raw': JSON.stringify(loc, null, ' ')
+          };
+
+        return normalRes;
+      }
     })
+
   ];
 
   Y.GeocoderCollection = Backbone.Collection.extend({
