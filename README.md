@@ -8,6 +8,8 @@ Yonder is a JavaScript application that has no server-side dependencies. As such
 * [Google Maps](http://code.google.com/apis/maps/documentation/geocoding/)
 * [Yahoo! Placefinder](http://developer.yahoo.com/geo/placefinder/)
 * [Mapquest](http://www.mapquestapi.com/geocoding/)
+* [MapBox](https://www.mapbox.com/developers/api/geocoding/) (Unofficial)
+* [Esri](http://geocode.arcgis.com/arcgis/index.html)
 
 ## How do I add a geocoder? ##
 Geocoder support is done via a Backbone.js model. Simply add a new model to add support for another geocoder. The short version is:
