@@ -1,15 +1,17 @@
+/*globals Backbone, L, _, jQuery */
+
 var Yonder = Yonder || {};
 
-(function(Y) {
+(function(Y, $) {
   Y.MapView = Backbone.View.extend({
     initialize: function() {
       this.map = new L.Map('map');
       this.pointsUpdated = 0;
       this.layerGroup = new L.LayerGroup();
       var tileUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-        tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        tile = new L.TileLayer(tileUrl, {maxZoom: 18, attribution: tileAttribution});
-  this.map.addLayer(this.layerGroup);
+          tileAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          tile = new L.TileLayer(tileUrl, {maxZoom: 18, attribution: tileAttribution});
+      this.map.addLayer(this.layerGroup);
       this.map.setView(new L.LatLng(0, 0), 2).addLayer(tile);
       this.collection.bind('change', this.render, this);
     },
@@ -33,9 +35,9 @@ var Yonder = Yonder || {};
         this.collection.each(function(model) {
           var pt;
 
-          if (model.has('Latitude') && model.has('Longitude')) {
-            pt = new L.LatLng(model.get('Latitude'), model.get('Longitude'));
-            
+          if (model.has('LatLng')) {
+            pt = new L.LatLng(model.get('LatLng')[0], model.get('LatLng')[1]);
+
             // Add markers to the map
             view.layerGroup.addLayer(new L.CircleMarker(pt, {
               color: model.color,
@@ -52,7 +54,7 @@ var Yonder = Yonder || {};
         });
 
         if (hasResults) {
-          this.map.fitBounds(bounds);  
+          this.map.fitBounds(bounds);
         }
 
         // Reset the counter
@@ -69,7 +71,7 @@ var Yonder = Yonder || {};
     initialize: function() {
       this.model.bind('change', this.render, this);
     },
-    
+
     render: function() {
       var type = this.model.type;
 
@@ -77,8 +79,8 @@ var Yonder = Yonder || {};
 
       _.each(this.model.toJSON(), function(val, name) {
         $('.geocoder-result', '#'+type).append(
-          _.template( $("#geocoder-result-template").html(), 
-            { 'name': name, 'val': val } 
+          _.template( $("#geocoder-result-template").html(),
+            { 'name': name, 'val': val }
           )
         );
       });
@@ -102,8 +104,8 @@ var Yonder = Yonder || {};
       this.geocoders = new Y.GeocoderCollection();
 
       // Init and add each geocoder model
-      _.each(Y.geocoderList, function(g) {
-        var geocoder = new g();
+      _.each(Y.geocoderList, function(Geocoder) {
+        var geocoder = new Geocoder();
 
         // Init the view
         new Y.GeocoderView({ model: geocoder});
@@ -118,8 +120,8 @@ var Yonder = Yonder || {};
     // Render the context for each  geocoder result
     render: function(geocoder) {
       $('#geocoder-results', this.el).append(
-        _.template( $("#geocoder-list-template").html(), 
-          { 'type': geocoder.type, 'name': geocoder.name, 'color': geocoder.color} 
+        _.template( $("#geocoder-list-template").html(),
+          { 'type': geocoder.type, 'name': geocoder.name, 'color': geocoder.color}
         )
       );
     },
@@ -130,8 +132,8 @@ var Yonder = Yonder || {};
 
       if (addr) {
         // Triggers a fetch for each model in the collection
-        this.geocoders.fetch( { 'address': addr });  
+        this.geocoders.fetch( { 'address': addr });
       }
     }
   });
-})(Yonder);
+}(Yonder, jQuery));
