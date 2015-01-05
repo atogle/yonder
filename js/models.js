@@ -248,6 +248,52 @@ var Yonder = Yonder || {};
       }
     }),
 
+
+    // OpenCage
+    Y.GeocoderModel.extend({
+      //Include a unique geocoder name for display
+      type: 'opencage',
+      name: 'OpenCage',
+      color: '#e0c74d', // yellow-ish
+      // Geocode the address and call success or error when complete
+      // https://api.opencagedata.com/geocode/v1/format?parameters
+      // Key c166308d800a7ccfac4b37506db776c1
+      geocode: function(addr) {
+        var model = this;
+        var encodedAddr = encodeURIComponent(addr);
+
+        try {
+          $.ajax({
+            url: 'http://api.opencagedata.com/geocode/v1/json?q=' + encodedAddr + '&key=c166308d800a7ccfac4b37506db776c1',
+            crossDomain: true,
+            success: function (res) {
+              if (res.results.length) {
+                model.set(model.parse(res.results[0]));
+              } else {
+                model.set({'Error': 'No results.'});
+              }
+            },
+          });
+        } catch (e) {
+          model.set({'Error': 'Error parsing results.'});
+        }
+
+      },
+      // Override parse to set normalized attributes for display.
+      // The res param is the raw respsone from the geocoder
+      parse: function(loc) {
+        var normalRes = {
+            'Address': loc.formatted,
+            'LatLng': [parseFloat(loc.geometry.lat), parseFloat(loc.geometry.lng)],
+            'Quality': loc.confidence,
+            'Raw': JSON.stringify(loc, null, ' ')
+          };
+
+        return normalRes;
+      }
+    }),
+
+
     //Yahoo! PlaceFinder
     Y.GeocoderModel.extend({
       //Include a unique geocoder name for display
